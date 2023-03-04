@@ -13,6 +13,14 @@ router.post('/signup', async (req, res, next) => {
 	const { firstName, lastName, email, password } = req.body;
 
 	try {
+		if (!firstName || !lastName || !email || !password) {
+			res.render('auth/signup', {
+				errorMessage:
+					'All fields are mandatory. Please provide your username, email and password.',
+			});
+			return;
+		}
+
 		let salt = await bcryptjs.genSalt(saltRounds);
 		let passwordHash = await bcryptjs.hash(password, salt);
 		let newUser = await User.create({ firstName, lastName, email, password: passwordHash });
